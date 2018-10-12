@@ -31,6 +31,8 @@
 '
 '-----------------------------------------------------------------------------------------------------------------------------------------------
 
+Imports System.Runtime.InteropServices
+
 Module SharedCode
 
     'Run hidden Windows command line processes with argument(s)
@@ -41,9 +43,31 @@ Module SharedCode
         Process.Start(p)
     End Sub
 
+    'Turn off screen(s)
+    'SendMessage(Me.Handle, WM_SYSCOMMAND, CType(SC_MONITORPOWER, IntPtr), CType(MonitorShutoff, IntPtr))
+    Public Const WM_SYSCOMMAND As Integer = &H112
+    Public Const SC_MONITORPOWER As Integer = &HF170
+    Public Const MonitorToLowPower As Integer = 1
+    Public Const MonitorShutoff As Integer = 2
+    <DllImport("user32.dll")> _
+    Function SendMessage(ByVal hWnd As IntPtr, ByVal hMsg As Integer, _
+                         ByVal wParam As IntPtr, ByVal lParam As IntPtr) As IntPtr
+    End Function
+
+    'Lock computer
+    <DllImport("user32.dll")> _
+    Sub LockWorkStation()
+    End Sub
+
     'Hibernate computer
     Sub hibernate()
-        Call startHiddenProcess("Shutdown", "-h")
+        'Call startHiddenProcess("Shutdown", "-h")
+        Application.SetSuspendState(PowerState.Hibernate, True, True)
+    End Sub
+
+    'Sleep computer
+    Sub sleep()
+        Application.SetSuspendState(PowerState.Suspend, True, True)
     End Sub
 
     'Shutdown computer

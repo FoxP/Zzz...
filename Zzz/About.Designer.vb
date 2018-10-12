@@ -27,6 +27,7 @@ Partial Class ABOUT
         Me.panelTitle = New System.Windows.Forms.Panel()
         Me.labelIcone = New System.Windows.Forms.Label()
         Me.labelExeInfo = New System.Windows.Forms.Label()
+        Me.labelGitHub = New System.Windows.Forms.Label()
         Me.panelTitle.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -80,12 +81,25 @@ Partial Class ABOUT
         Me.labelExeInfo.TabIndex = 4
         Me.labelExeInfo.Text = "Version : {...}"
         '
+        'labelGitHub
+        '
+        Me.labelGitHub.AutoSize = True
+        Me.labelGitHub.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.labelGitHub.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.labelGitHub.ForeColor = System.Drawing.SystemColors.HotTrack
+        Me.labelGitHub.Location = New System.Drawing.Point(62, 269)
+        Me.labelGitHub.Name = "labelGitHub"
+        Me.labelGitHub.Size = New System.Drawing.Size(77, 16)
+        Me.labelGitHub.TabIndex = 6
+        Me.labelGitHub.Text = "GitHub : {...}"
+        '
         'ABOUT
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
-        Me.ClientSize = New System.Drawing.Size(202, 275)
+        Me.ClientSize = New System.Drawing.Size(202, 293)
+        Me.Controls.Add(Me.labelGitHub)
         Me.Controls.Add(Me.labelExeInfo)
         Me.Controls.Add(Me.panelTitle)
         Me.Controls.Add(Me.labelImg)
@@ -110,4 +124,5 @@ Partial Class ABOUT
     Friend WithEvents panelTitle As System.Windows.Forms.Panel
     Friend WithEvents labelIcone As System.Windows.Forms.Label
     Friend WithEvents labelExeInfo As System.Windows.Forms.Label
+    Friend WithEvents labelGitHub As System.Windows.Forms.Label
 End Class

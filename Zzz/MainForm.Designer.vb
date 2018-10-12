@@ -35,7 +35,7 @@ Partial Class MainForm
         Me.progressBarCompletion = New System.Windows.Forms.ProgressBar()
         Me.lbSecond = New System.Windows.Forms.Label()
         Me.nudSecond = New System.Windows.Forms.NumericUpDown()
-        Me.cbLock = New System.Windows.Forms.CheckBox()
+        Me.cbPreventLock = New System.Windows.Forms.CheckBox()
         Me.rbShutdown = New System.Windows.Forms.RadioButton()
         Me.rbSleep = New System.Windows.Forms.RadioButton()
         Me.rbLogOff = New System.Windows.Forms.RadioButton()
@@ -44,6 +44,11 @@ Partial Class MainForm
         Me.cbAbout = New System.Windows.Forms.Button()
         Me.notifyIconMain = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.contextMenuStripMain = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.rbHibernate = New System.Windows.Forms.RadioButton()
+        Me.tooltipMain = New System.Windows.Forms.ToolTip(Me.components)
+        Me.cbScreenOff = New System.Windows.Forms.CheckBox()
+        Me.cbLockSession = New System.Windows.Forms.CheckBox()
+        Me.lbSeparator = New System.Windows.Forms.Label()
         CType(Me.nudHour, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.nudMinute, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.nudDay, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -110,9 +115,9 @@ Partial Class MainForm
         '
         'cbStart
         '
-        Me.cbStart.Location = New System.Drawing.Point(9, 80)
+        Me.cbStart.Location = New System.Drawing.Point(218, 87)
         Me.cbStart.Name = "cbStart"
-        Me.cbStart.Size = New System.Drawing.Size(200, 23)
+        Me.cbStart.Size = New System.Drawing.Size(95, 23)
         Me.cbStart.TabIndex = 15
         Me.cbStart.Text = "Start"
         Me.cbStart.UseVisualStyleBackColor = True
@@ -120,16 +125,16 @@ Partial Class MainForm
         'cbStop
         '
         Me.cbStop.Enabled = False
-        Me.cbStop.Location = New System.Drawing.Point(218, 80)
+        Me.cbStop.Location = New System.Drawing.Point(322, 87)
         Me.cbStop.Name = "cbStop"
-        Me.cbStop.Size = New System.Drawing.Size(200, 23)
+        Me.cbStop.Size = New System.Drawing.Size(96, 23)
         Me.cbStop.TabIndex = 16
         Me.cbStop.Text = "Stop"
         Me.cbStop.UseVisualStyleBackColor = True
         '
         'progressBarCompletion
         '
-        Me.progressBarCompletion.Location = New System.Drawing.Point(-1, 110)
+        Me.progressBarCompletion.Location = New System.Drawing.Point(-1, 116)
         Me.progressBarCompletion.MarqueeAnimationSpeed = 10
         Me.progressBarCompletion.Name = "progressBarCompletion"
         Me.progressBarCompletion.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -156,21 +161,21 @@ Partial Class MainForm
         Me.nudSecond.TabIndex = 9
         Me.nudSecond.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
-        'cbLock
+        'cbPreventLock
         '
-        Me.cbLock.AutoSize = True
-        Me.cbLock.Location = New System.Drawing.Point(10, 59)
-        Me.cbLock.Name = "cbLock"
-        Me.cbLock.Size = New System.Drawing.Size(121, 17)
-        Me.cbLock.TabIndex = 10
-        Me.cbLock.Text = "Prevent screen lock"
-        Me.cbLock.UseVisualStyleBackColor = True
+        Me.cbPreventLock.AutoSize = True
+        Me.cbPreventLock.Location = New System.Drawing.Point(10, 59)
+        Me.cbPreventLock.Name = "cbPreventLock"
+        Me.cbPreventLock.Size = New System.Drawing.Size(121, 17)
+        Me.cbPreventLock.TabIndex = 10
+        Me.cbPreventLock.Text = "Prevent screen lock"
+        Me.cbPreventLock.UseVisualStyleBackColor = True
         '
         'rbShutdown
         '
         Me.rbShutdown.AutoCheck = False
         Me.rbShutdown.AutoSize = True
-        Me.rbShutdown.Location = New System.Drawing.Point(152, 58)
+        Me.rbShutdown.Location = New System.Drawing.Point(322, 58)
         Me.rbShutdown.Name = "rbShutdown"
         Me.rbShutdown.Size = New System.Drawing.Size(73, 17)
         Me.rbShutdown.TabIndex = 11
@@ -182,7 +187,7 @@ Partial Class MainForm
         '
         Me.rbSleep.AutoCheck = False
         Me.rbSleep.AutoSize = True
-        Me.rbSleep.Location = New System.Drawing.Point(247, 58)
+        Me.rbSleep.Location = New System.Drawing.Point(267, 58)
         Me.rbSleep.Name = "rbSleep"
         Me.rbSleep.Size = New System.Drawing.Size(52, 17)
         Me.rbSleep.TabIndex = 12
@@ -194,7 +199,7 @@ Partial Class MainForm
         '
         Me.rbLogOff.AutoCheck = False
         Me.rbLogOff.AutoSize = True
-        Me.rbLogOff.Location = New System.Drawing.Point(320, 58)
+        Me.rbLogOff.Location = New System.Drawing.Point(207, 58)
         Me.rbLogOff.Name = "rbLogOff"
         Me.rbLogOff.Size = New System.Drawing.Size(58, 17)
         Me.rbLogOff.TabIndex = 13
@@ -227,7 +232,7 @@ Partial Class MainForm
         '
         'cbAbout
         '
-        Me.cbAbout.Location = New System.Drawing.Point(427, 80)
+        Me.cbAbout.Location = New System.Drawing.Point(427, 87)
         Me.cbAbout.Name = "cbAbout"
         Me.cbAbout.Size = New System.Drawing.Size(24, 23)
         Me.cbAbout.TabIndex = 17
@@ -245,19 +250,65 @@ Partial Class MainForm
         Me.contextMenuStripMain.Name = "ContextMenuStrip1"
         Me.contextMenuStripMain.Size = New System.Drawing.Size(61, 4)
         '
+        'rbHibernate
+        '
+        Me.rbHibernate.AutoCheck = False
+        Me.rbHibernate.AutoSize = True
+        Me.rbHibernate.Location = New System.Drawing.Point(134, 58)
+        Me.rbHibernate.Name = "rbHibernate"
+        Me.rbHibernate.Size = New System.Drawing.Size(71, 17)
+        Me.rbHibernate.TabIndex = 19
+        Me.rbHibernate.TabStop = True
+        Me.rbHibernate.Text = "Hibernate"
+        Me.rbHibernate.UseVisualStyleBackColor = True
+        '
+        'cbScreenOff
+        '
+        Me.cbScreenOff.AutoSize = True
+        Me.cbScreenOff.Location = New System.Drawing.Point(10, 91)
+        Me.cbScreenOff.Name = "cbScreenOff"
+        Me.cbScreenOff.Size = New System.Drawing.Size(109, 17)
+        Me.cbScreenOff.TabIndex = 20
+        Me.cbScreenOff.Text = "Turn off screen(s)"
+        Me.cbScreenOff.UseVisualStyleBackColor = True
+        '
+        'cbLockSession
+        '
+        Me.cbLockSession.AutoSize = True
+        Me.cbLockSession.Location = New System.Drawing.Point(126, 91)
+        Me.cbLockSession.Name = "cbLockSession"
+        Me.cbLockSession.Size = New System.Drawing.Size(88, 17)
+        Me.cbLockSession.TabIndex = 21
+        Me.cbLockSession.Text = "Lock session"
+        Me.cbLockSession.UseVisualStyleBackColor = True
+        '
+        'lbSeparator
+        '
+        Me.lbSeparator.AutoSize = True
+        Me.lbSeparator.ForeColor = System.Drawing.SystemColors.ActiveBorder
+        Me.lbSeparator.Location = New System.Drawing.Point(-44, 68)
+        Me.lbSeparator.Name = "lbSeparator"
+        Me.lbSeparator.Size = New System.Drawing.Size(565, 13)
+        Me.lbSeparator.TabIndex = 24
+        Me.lbSeparator.Text = "_________________________________________________________________________________" & _
+            "____________"
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
-        Me.ClientSize = New System.Drawing.Size(460, 119)
+        Me.ClientSize = New System.Drawing.Size(460, 125)
+        Me.Controls.Add(Me.cbLockSession)
+        Me.Controls.Add(Me.cbScreenOff)
+        Me.Controls.Add(Me.rbShutdown)
+        Me.Controls.Add(Me.rbHibernate)
         Me.Controls.Add(Me.cbAbout)
         Me.Controls.Add(Me.progressBarCompletion)
         Me.Controls.Add(Me.rbReboot)
         Me.Controls.Add(Me.rbLogOff)
         Me.Controls.Add(Me.rbSleep)
-        Me.Controls.Add(Me.rbShutdown)
-        Me.Controls.Add(Me.cbLock)
+        Me.Controls.Add(Me.cbPreventLock)
         Me.Controls.Add(Me.lbSecond)
         Me.Controls.Add(Me.nudSecond)
         Me.Controls.Add(Me.cbStop)
@@ -269,6 +320,7 @@ Partial Class MainForm
         Me.Controls.Add(Me.nudMinute)
         Me.Controls.Add(Me.nudHour)
         Me.Controls.Add(Me.trackBarSeconds)
+        Me.Controls.Add(Me.lbSeparator)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
@@ -294,7 +346,7 @@ Partial Class MainForm
     Friend WithEvents progressBarCompletion As System.Windows.Forms.ProgressBar
     Friend WithEvents lbSecond As System.Windows.Forms.Label
     Friend WithEvents nudSecond As System.Windows.Forms.NumericUpDown
-    Friend WithEvents cbLock As System.Windows.Forms.CheckBox
+    Friend WithEvents cbPreventLock As System.Windows.Forms.CheckBox
     Friend WithEvents rbShutdown As System.Windows.Forms.RadioButton
     Friend WithEvents rbSleep As System.Windows.Forms.RadioButton
     Friend WithEvents rbLogOff As System.Windows.Forms.RadioButton
@@ -303,5 +355,10 @@ Partial Class MainForm
     Friend WithEvents cbAbout As System.Windows.Forms.Button
     Friend WithEvents notifyIconMain As System.Windows.Forms.NotifyIcon
     Friend WithEvents contextMenuStripMain As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents rbHibernate As System.Windows.Forms.RadioButton
+    Friend WithEvents tooltipMain As System.Windows.Forms.ToolTip
+    Friend WithEvents cbScreenOff As System.Windows.Forms.CheckBox
+    Friend WithEvents cbLockSession As System.Windows.Forms.CheckBox
+    Friend WithEvents lbSeparator As System.Windows.Forms.Label
 
 End Class

@@ -51,6 +51,8 @@ Public Class MainForm
     Public menuShow As New ToolStripMenuItem
     Public menuExit As New ToolStripMenuItem
     Public menuAbout As New ToolStripMenuItem
+    Public menuEnable As New ToolStripMenuItem
+    Public menuDisable As New ToolStripMenuItem
 
     'Main Form loading event
     Private Sub MainForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
@@ -61,9 +63,17 @@ Public Class MainForm
         ' - Show
         ' - About
         ' - Exit
+        ' - Start / Stop
         menuShow.Text = "Show"
         menuExit.Text = "Exit"
         menuAbout.Text = "About"
+        menuEnable.Text = "Start"
+        menuDisable.Text = "Stop"
+        menuShow.ToolTipText = "Show " & My.Application.Info.ProductName
+        menuExit.ToolTipText = "Exit " & My.Application.Info.ProductName
+        menuAbout.ToolTipText = "About " & My.Application.Info.ProductName
+        menuEnable.ToolTipText = "Start scheduled task"
+        menuDisable.ToolTipText = "Stop scheduled task"
         'Icons extracted from imageres.dll
         Dim icoLarge As IntPtr
         Dim icoSmall As IntPtr
@@ -74,6 +84,11 @@ Public Class MainForm
         menuExit.Image = Icon.FromHandle(icoSmall).ToBitmap
         Call ExtractIcon(sFile, 76, icoLarge, icoSmall, 1)
         menuAbout.Image = Icon.FromHandle(icoSmall).ToBitmap
+        menuEnable.Image = My.Resources.Zzz_small.ToBitmap
+        menuDisable.Image = My.Resources.Zzz_small.ToBitmap
+        contextMenuStripMain.Items.Add(menuEnable)
+        contextMenuStripMain.Items.Add(menuDisable)
+        contextMenuStripMain.Items.Add(New ToolStripSeparator())
         contextMenuStripMain.Items.Add(menuShow)
         contextMenuStripMain.Items.Add(New ToolStripSeparator())
         contextMenuStripMain.Items.Add(menuAbout)
@@ -85,9 +100,26 @@ Public Class MainForm
         AddHandler menuExit.Click, AddressOf Me.Close
         'Show "About" Form on click event for "About" menu item
         AddHandler menuAbout.Click, AddressOf cbAbout_Click
+        'Start scheduled task on click event for "Start" menu item
+        AddHandler menuEnable.Click, AddressOf cbStart_Click
+        'Stop scheduled task on click event for "Stop" menu item
+        AddHandler menuDisable.Click, AddressOf cbStop_Click
 
         'Add ContextMenuStrip to the NotifyIcon
         notifyIconMain.ContextMenuStrip = contextMenuStripMain
+
+        'Hide "Stop" systray menu
+        menuDisable.Visible = False
+
+        'Tooltips
+        tooltipMain.SetToolTip(cbAbout, "About " & My.Application.Info.ProductName)
+        tooltipMain.SetToolTip(cbStart, "Start scheduled task")
+        tooltipMain.SetToolTip(cbStop, "Stop scheduled task")
+        tooltipMain.SetToolTip(rbShutdown, "Shutdown computer")
+        tooltipMain.SetToolTip(rbReboot, "Reboot computer")
+        tooltipMain.SetToolTip(rbLogOff, "Disconnect active user")
+        tooltipMain.SetToolTip(rbSleep, "Sleep computer")
+        tooltipMain.SetToolTip(rbHibernate, "Hibernate computer")
 
         'Countdown timer
         countdownTimer.Interval = 500
@@ -180,6 +212,17 @@ Public Class MainForm
 
         'Start countdown timer
         countdownTimer.Start()
+
+        'Lock user session
+        If cbLockSession.Checked And cbPreventLock.Checked = False Then
+            Call LockWorkStation()
+            Threading.Thread.Sleep(3000)
+        End If
+
+        'Turn off screen(s)
+        If cbScreenOff.Checked And cbPreventLock.Checked = False Then
+            Call SendMessage(Me.Handle, WM_SYSCOMMAND, CType(SC_MONITORPOWER, IntPtr), CType(MonitorShutoff, IntPtr))
+        End If
     End Sub
 
     'When countdown timer is running
@@ -189,8 +232,8 @@ Public Class MainForm
         diffTime = dtEnd.Subtract(DateTime.Now)
         If (diffTime.TotalMilliseconds) > 500 Then
             'Keep computer awake
-            If cbLock.Checked Then
-                'Press `Ctrl` key
+            If cbPreventLock.Checked Then
+                'Press `Ctrl` keyall SendMessage(Me.Handle, WM_SYSCOMMAND, CType(SC_MONITORPOWER, IntPtr), CType(MonitorShutoff, IntPtr))
                 keybd_event(&HA3, &H45S, &H1S Or 0, 0)
                 'Release `Ctrl` key
                 keybd_event(&HA3, &H45S, &H1S Or &H2S, 0)
@@ -213,7 +256,7 @@ Public Class MainForm
             countdownTimer.Stop()
             'Unlock main Form controls
             Call unlockUI()
-            'Shutdown, reboot, log off or hibernate computer
+            'Shutdown, reboot, log off, sleep or hibernate computer
             If rbShutdown.Checked Then
                 Call shutdown()
                 notifyIconMain.BalloonTipText = "Click here to cancel computer " & rbShutdown.Text.ToLower & "."
@@ -223,6 +266,8 @@ Public Class MainForm
             ElseIf rbLogOff.Checked Then
                 Call logOff()
             ElseIf rbSleep.Checked Then
+                Call sleep()
+            ElseIf rbHibernate.Checked Then
                 Call hibernate()
             End If
             'Update the estimated date/time with a timer
@@ -247,6 +292,8 @@ Public Class MainForm
         trackBarSeconds.Enabled = False
         cbStart.Enabled = False
         cbStop.Enabled = True
+        menuEnable.Visible = False
+        menuDisable.Visible = True
     End Sub
 
     'Unlock main Form controls
@@ -260,6 +307,8 @@ Public Class MainForm
         trackBarSeconds.Enabled = True
         cbStart.Enabled = True
         cbStop.Enabled = False
+        menuEnable.Visible = True
+        menuDisable.Visible = False
     End Sub
 
     'When main Form is minimized, hide it and show a notification popup
@@ -319,7 +368,7 @@ Public Class MainForm
     End Sub
 
     'RadioButtons that can be unchecked, like CheckBoxes
-    Private Sub rb_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rbReboot.Click, rbLogOff.Click, rbShutdown.Click, rbSleep.Click
+    Private Sub rb_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rbReboot.Click, rbLogOff.Click, rbShutdown.Click, rbSleep.Click, rbHibernate.Click
         If CBool(sender.Checked) Then
             sender.Checked = False
         Else
@@ -336,9 +385,21 @@ Public Class MainForm
             If Not rbSleep Is sender Then
                 rbSleep.Checked = False
             End If
+            If Not rbHibernate Is sender Then
+                rbHibernate.Checked = False
+            End If
         End If
     End Sub
 
+    Private Sub cbPreventLock_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbPreventLock.CheckedChanged
+        If cbPreventLock.Checked = True Then
+            cbScreenOff.Enabled = False
+            cbLockSession.Enabled = False
+        Else
+            cbScreenOff.Enabled = True
+            cbLockSession.Enabled = True
+        End If
+    End Sub
 End Class
 
 'If application is already running when started, show main Form

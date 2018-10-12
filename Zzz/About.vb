@@ -33,9 +33,17 @@
 
 Public Class ABOUT
 
+    Private Const sGithubRepositoryURL = "https://github.com/FoxP/Zzz..."
+
     Private Sub ABOUT_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         labelExeInfo.Text = "Build version : " & My.Application.Info.Version.ToString & vbNewLine & _
-                            "Compilation date : " & retrieveLinkerTimestamp(Application.ExecutablePath).ToString("yyyy-MM-dd")
+                            "Compilation date : " & retrieveLinkerTimestamp(Application.ExecutablePath).ToString("yyyy-MM-dd") & vbNewLine & _
+                            "GitHub : "
+        labelGitHub.Text = My.Application.Info.ProductName
+    End Sub
+
+    Private Sub labelGitHub_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles labelGitHub.Click
+        Process.Start(sGithubRepositoryURL)
     End Sub
 
     'Return compilation date of a given .dll or .exe file path
